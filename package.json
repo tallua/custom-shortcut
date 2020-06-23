@@ -12,7 +12,8 @@
 	"activationEvents": [
 		"onCommand:custom-shortcut.refresh",
 		"onCommand:custom-shortcut.open-config",
-		"onView:custom-shortcuts"
+		"onView:global-shortcuts",
+		"onView:local-shortcuts"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
