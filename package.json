@@ -10,16 +10,44 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:custom-shortcut.helloWorld"
+		"onCommand:custom-shortcut.refresh",
+		"onCommand:custom-shortcut.open-config",
+		"onView:global-shortcuts",
+		"onView:local-shortcuts"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "custom-shortcut.helloWorld",
-				"title": "Hello World"
+				"command": "custom-shortcut.refresh",
+				"title": "Custom Shortcut : Refresh"
+			},
+			{
+				"command": "custom-shortcut.open-config",
+				"title": "Custom Shortcut : Open Config"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "custom-shortcut",
+					"title": "Custom Shortcuts",
+					"icon":"./res/dummy.svg"
+				}
+			]
+		},
+		"views": {
+			"custom-shortcut": [
+				{
+					"id": "global-shortcuts",
+					"name": "Global Shortcuts"
+				},
+				{
+					"id": "local-shortcuts",
+					"name": "Local Shortcuts"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
