@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 
 import { NullShortcut, ShortcutProvider } from './shortcut_provider';
+import { ShortcutDirectory } from './shortcuts/shortcut_directory';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -11,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Custom Shortcut : Refresh');
 	});
 	context.subscriptions.push(refreshCommand);
-
+	
 	let configCommand = vscode.commands.registerCommand('custom-shortcut.open-config', () => {
 		vscode.window.showInformationMessage('Custom Shortcut : Open  Config');
 	});
@@ -20,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('custom-shortcut registering tree data provider...');
 	vscode.window.registerTreeDataProvider(
 		'global-shortcuts',
-		new ShortcutProvider(new NullShortcut())
+		new ShortcutProvider(new ShortcutDirectory(require('os').homedir() + '/' + 'Downloads'))
 	);
 	vscode.window.registerTreeDataProvider(
 		'local-shortcuts',

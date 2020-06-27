@@ -38,7 +38,7 @@ export class ShortcutProvider implements vscode.TreeDataProvider<Shortcut> {
         }
 
         if(element.isFolderType()) {
-            Promise.resolve(element.getChilds());
+            return Promise.resolve(element.getChilds());
         }
 
         return Promise.resolve([]);
