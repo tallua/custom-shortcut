@@ -52,8 +52,4 @@ export class ShortcutDirectory implements Shortcut {
 
         return result;
     }
-
-    open() : boolean {
-        return false;
-    }
 }

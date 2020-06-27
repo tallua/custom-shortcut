@@ -21,8 +21,4 @@ export class FileShortcut implements Shortcut {
     getChilds() : Shortcut[] {
         return [];
     }
-
-    open() : boolean {
-        return false;
-    }
 }

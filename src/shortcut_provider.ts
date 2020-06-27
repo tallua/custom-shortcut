@@ -1,5 +1,6 @@
 
 import * as vscode from 'vscode';
+import { read } from 'fs';
 
 
 export interface Shortcut extends vscode.TreeItem {
@@ -7,8 +8,6 @@ export interface Shortcut extends vscode.TreeItem {
 
     // use if is_folder_type() == true
     getChilds() : Shortcut[];
-    // use if is_folder_type() == false
-    open() : boolean;
 }
 
 export class NullShortcut implements Shortcut {
@@ -18,10 +17,6 @@ export class NullShortcut implements Shortcut {
 
     getChilds() : Shortcut[] {
         return [];
-    }
-    
-    open() : boolean {
-        return false;
     }
 }
 
