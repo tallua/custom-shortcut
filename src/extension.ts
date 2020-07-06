@@ -18,6 +18,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(configCommand);
 
+	let openWebCommand = vscode.commands.registerCommand('custom-shortcut.open-web', (url : string) => {
+		console.log('custom-shortcut.open-web : opening : ' + url);
+		vscode.env.openExternal(vscode.Uri.parse(url));
+	});
+	context.subscriptions.push(openWebCommand);
+
 	console.log('custom-shortcut registering tree data provider...');
 	vscode.window.registerTreeDataProvider(
 		'global-shortcuts',

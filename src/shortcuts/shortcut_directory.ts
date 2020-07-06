@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import { Shortcut } from '../shortcut_provider';
-import { FileShortcut } from './file_shortcut';
+import { FileShortcutFactory } from './file_shortcut_factory';
 
 import * as fs from 'fs';
 
@@ -10,7 +10,8 @@ export class ShortcutDirectory implements Shortcut {
     public readonly collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
     public readonly label : string | undefined;
 
-    constructor(public readonly fullpath : string) { 
+    constructor(public readonly fullpath : string) {
+        console.debug('ShortcutDirectory : creating : ' + fullpath); 
         this.label = fullpath.split('/').pop();
     }
 
@@ -21,7 +22,6 @@ export class ShortcutDirectory implements Shortcut {
     getChilds() : Shortcut[] {
         let childs = fs.readdirSync(this.fullpath);
         childs = childs.map((s) => { return this.fullpath + '/' + s; });
-        console.log(childs.length + ' childs found on ' + this.fullpath);
 
         const shortcuts = childs.map(fullpath => {
             const lstat = fs.lstatSync(fullpath);
@@ -29,7 +29,7 @@ export class ShortcutDirectory implements Shortcut {
             if(lstat.isDirectory()) {
                 return new ShortcutDirectory(fullpath);
             } else if(lstat.isFile()) {
-                return new FileShortcut(fullpath);
+                return FileShortcutFactory.getShortcut(fullpath);
             } else {
                 return null;
             }
@@ -40,15 +40,8 @@ export class ShortcutDirectory implements Shortcut {
         }
 
         const result = shortcuts.filter(nullfilter);
-        console.log(result.length + ' childs left on ' + this.fullpath);
-
-        result.forEach(element => {
-            if(element.isFolderType()) {
-                console.log('folder : ' + element.fullpath);
-            } else {
-                console.log('file : ' + element.fullpath);
-            }
-        });
+        console.debug('ShortcutDirectory : ' + result.length + ' childs on : ' 
+            + this.fullpath);
 
         return result;
     }
