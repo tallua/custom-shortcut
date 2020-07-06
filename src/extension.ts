@@ -18,8 +18,8 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(configCommand);
 
-	let openWebCommand = vscode.commands.registerCommand('custom-shortcut.open-web', (url : string) => {
-		console.log('custom-shortcut.open-web : opening : ' + url);
+	let openWebCommand = vscode.commands.registerCommand('custom-shortcut.open-ext', (url : string) => {
+		console.log('custom-shortcut.open-ext : opening : ' + url);
 		vscode.env.openExternal(vscode.Uri.parse(url));
 	});
 	context.subscriptions.push(openWebCommand);
