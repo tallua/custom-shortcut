@@ -2,9 +2,9 @@
 import { Shortcut } from '../shortcut_provider';
 import { URLShortcut } from './url_shortcut';
 
-export class FileShortcutFactory {
+export class ShortcutFactory {
 
-    static getShortcut(fullpath : string) : Shortcut | null {
+    static getFileShortcut(fullpath : string) : Shortcut | null {
         let ext = fullpath.split('.').pop();
         ext = ext?.toLowerCase();
 

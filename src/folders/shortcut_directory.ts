@@ -1,7 +1,7 @@
 
 import * as vscode from 'vscode';
 import { Shortcut } from '../shortcut_provider';
-import { FileShortcutFactory } from './file_shortcut_factory';
+import { ShortcutFactory } from '../shortcuts/shortcut_factory';
 
 import * as fs from 'fs';
 
@@ -29,7 +29,7 @@ export class ShortcutDirectory implements Shortcut {
             if(lstat.isDirectory()) {
                 return new ShortcutDirectory(fullpath);
             } else if(lstat.isFile()) {
-                return FileShortcutFactory.getShortcut(fullpath);
+                return ShortcutFactory.getFileShortcut(fullpath);
             } else {
                 return null;
             }

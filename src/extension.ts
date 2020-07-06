@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { NullShortcut, ShortcutProvider } from './shortcut_provider';
-import { ShortcutDirectory } from './shortcuts/shortcut_directory';
+import { ShortcutDirectory } from './folders/shortcut_directory';
 
 export function activate(context: vscode.ExtensionContext) {
 
