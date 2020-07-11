@@ -1,6 +1,7 @@
 
 import { Shortcut } from '../shortcut_provider';
 import { URLShortcut } from './url_shortcut';
+import { LNKShortcut } from './lnk_shortcut';
 
 export class ShortcutFactory {
 
@@ -11,6 +12,8 @@ export class ShortcutFactory {
         switch(ext) {
             case 'url':
                 return new URLShortcut(fullpath);
+            case 'lnk':
+                return new LNKShortcut(fullpath);
         }
 
         return null;
