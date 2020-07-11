@@ -18,11 +18,24 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(configCommand);
 
-	let openWebCommand = vscode.commands.registerCommand('custom-shortcut.open-ext', (url : string) => {
-		console.log('custom-shortcut.open-ext : opening : ' + url);
-		vscode.env.openExternal(vscode.Uri.parse(url));
+	let openLinkCommand = vscode.commands.registerCommand('custom-shortcut.open-link', (url : string) => {
+		console.log('custom-shortcut.open-link : opening : ' + url);
+
+		const uri = vscode.Uri.parse(url);
+		const ext_supported_schemes = ['http', 'https', 'mailto', 'vscode'];
+		if(ext_supported_schemes.indexOf(uri.scheme) > -1) {
+			console.debug('opening type : external');
+			vscode.env.openExternal(uri);
+		} else {
+			console.debug('opening type : document');
+			vscode.workspace.openTextDocument(url)
+				.then(
+					doc => { vscode.window.showTextDocument(doc); },
+					err => { vscode.window.showErrorMessage(err); }
+				);
+		}
 	});
-	context.subscriptions.push(openWebCommand);
+	context.subscriptions.push(openLinkCommand);
 
 	console.log('custom-shortcut registering tree data provider...');
 	vscode.window.registerTreeDataProvider(

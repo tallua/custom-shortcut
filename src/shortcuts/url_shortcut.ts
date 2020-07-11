@@ -18,7 +18,7 @@ export class URLShortcut implements Shortcut {
 
         const url = this.getUrl();
         this.command = {
-            command: 'custom-shortcut.open-ext',
+            command: 'custom-shortcut.open-link',
             title: '',
             arguments: [url]
         };
