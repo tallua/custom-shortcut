@@ -17,6 +17,25 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"title":"Custom Shortcut",
+			"properties": {
+				"custom-shortcut.globalDirectories" : {
+					"type":"array",
+					"items": {
+						"type":"string",
+						"title": "path"
+					},
+					"default":["~/Favorites"],
+					"description": "absoulute pathes you want to track"
+				},
+				"custom-shortcut.localDirectories" : {
+					"type":"string",
+					"default":".vscode/shortcuts.json",
+					"description": "relative path from your workspace directory"
+				}
+			}
+		},
 		"commands": [
 			{
 				"command": "custom-shortcut.refresh",
