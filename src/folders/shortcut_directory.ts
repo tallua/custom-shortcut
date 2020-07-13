@@ -1,9 +1,9 @@
 
 import * as vscode from 'vscode';
-import { Shortcut } from '../shortcut_provider';
-import { ShortcutFactory } from '../shortcuts/shortcut_factory';
-
 import * as fs from 'fs';
+
+import { Shortcut } from '../shortcut_provider';
+import { ShortcutFactory } from '../shortcut_factory';
 
 export class ShortcutDirectory implements Shortcut {
 
@@ -23,23 +23,7 @@ export class ShortcutDirectory implements Shortcut {
         let childs = fs.readdirSync(this.fullpath);
         childs = childs.map((s) => { return this.fullpath + '/' + s; });
 
-        const shortcuts = childs.map(fullpath => {
-            const lstat = fs.lstatSync(fullpath);
-
-            if(lstat.isDirectory()) {
-                return new ShortcutDirectory(fullpath);
-            } else if(lstat.isFile()) {
-                return ShortcutFactory.getFileShortcut(fullpath);
-            } else {
-                return null;
-            }
-        });
-
-        function nullfilter<TValue>(value : TValue | null | undefined) : value is TValue {
-            return value !== null && value !== undefined;
-        }
-
-        const result = shortcuts.filter(nullfilter);
+        const result : Shortcut[] = ShortcutFactory.createShortcuts(childs);
         console.debug('ShortcutDirectory : ' + result.length + ' childs on : ' 
             + this.fullpath);
 

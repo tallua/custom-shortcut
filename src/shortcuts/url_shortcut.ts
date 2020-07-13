@@ -1,8 +1,8 @@
 
 import * as vscode from 'vscode';
-import { Shortcut } from '../shortcut_provider';
-
 import * as fs from 'fs';
+
+import { Shortcut } from '../shortcut_provider';
 
 export class URLShortcut implements Shortcut {
 

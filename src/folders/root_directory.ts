@@ -1,12 +1,10 @@
 
 import * as vscode from 'vscode';
-import { Shortcut } from '../shortcut_provider';
-import { ShortcutFactory } from '../shortcuts/shortcut_factory';
 
-import { ShortcutDirectory } from './shortcut_directory';
+import { Shortcut } from '../shortcut_provider';
+import { ShortcutFactory } from '../shortcut_factory';
 
 export class RootDirectory implements Shortcut {
-
     public readonly collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
 
     constructor(public readonly pathlist : string[]) {
@@ -18,6 +16,6 @@ export class RootDirectory implements Shortcut {
     }
 
     getChilds() : Shortcut[] {
-        return this.pathlist.map(path => new ShortcutDirectory(path));
+        return ShortcutFactory.createShortcuts(this.pathlist);
     }
 }
