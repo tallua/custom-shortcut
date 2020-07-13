@@ -1,13 +1,9 @@
 import * as vscode from 'vscode';
 
-import { NullShortcut, ShortcutProvider } from './shortcut_provider';
-import { ShortcutDirectory } from './folders/shortcut_directory';
+import { ShortcutProvider } from './shortcut_provider';
+import { RootDirectory } from './folders/root_directory';
 
-export function activate(context: vscode.ExtensionContext) {
-
-	console.log('custom-shortcut is activating...');
-
-	console.log('custom-shortcut registering commands...');
+function registerCommands(context : vscode.ExtensionContext) {
 	let refreshCommand = vscode.commands.registerCommand('custom-shortcut.refresh', () => {
 		vscode.window.showInformationMessage('Custom Shortcut : Refresh');
 	});
@@ -36,16 +32,55 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 	context.subscriptions.push(openLinkCommand);
+}
 
-	console.log('custom-shortcut registering tree data provider...');
+function registerGlobalTreeview(config : vscode.WorkspaceConfiguration) {
+
+	const pathList : string[] | undefined = config.get('globalDirectories');
+	let refinedPath : string[] = [];
+
+	if(pathList !== undefined) {
+		refinedPath = pathList.map(path => {
+			if(path.startsWith('~')) {
+				return require('os').homedir() + path.substring(1);
+			}
+			return path;
+		});
+	}
+
 	vscode.window.registerTreeDataProvider(
 		'global-shortcuts',
-		new ShortcutProvider(new ShortcutDirectory(require('os').homedir() + '/' + 'Downloads'))
+		new ShortcutProvider(new RootDirectory(refinedPath))
 	);
+}
+
+function registerLocalTreeview(config : vscode.WorkspaceConfiguration) {
+
+	const path : string | undefined = config.get('globalDirectories');
+	let refinedPath : string[] = [];
+
+	if(path !== undefined) {
+		refinedPath = [path];
+	}
+
 	vscode.window.registerTreeDataProvider(
 		'local-shortcuts',
-		new ShortcutProvider(new NullShortcut())
+		new ShortcutProvider(new RootDirectory(refinedPath))
 	);
+}
+
+
+export function activate(context: vscode.ExtensionContext) {
+
+	console.log('custom-shortcut is activating...');
+	const config = vscode.workspace.getConfiguration('custom-shortcut');
+
+	console.log('custom-shortcut registering commands...');
+	registerCommands(context);
+
+	console.log('custom-shortcut registering tree data provider...');
+	registerGlobalTreeview(config);
+	registerLocalTreeview(config);
 
 	console.log('custom-shortcut is activated');
 }

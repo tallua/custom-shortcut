@@ -1,6 +1,6 @@
 
 import * as vscode from 'vscode';
-import { read } from 'fs';
+import { RootDirectory } from './folders/root_directory';
 
 
 export interface Shortcut extends vscode.TreeItem {
@@ -10,18 +10,8 @@ export interface Shortcut extends vscode.TreeItem {
     getChilds() : Shortcut[];
 }
 
-export class NullShortcut implements Shortcut {
-    isFolderType() : boolean {
-        return false;
-    }
-
-    getChilds() : Shortcut[] {
-        return [];
-    }
-}
-
 export class ShortcutProvider implements vscode.TreeDataProvider<Shortcut> {
-    constructor(private root : Shortcut) { }
+    constructor(private root : RootDirectory) { }
 
     getTreeItem(element : Shortcut) : vscode.TreeItem {
         return element;
@@ -29,7 +19,7 @@ export class ShortcutProvider implements vscode.TreeDataProvider<Shortcut> {
 
     getChildren(element : Shortcut) : Thenable<Shortcut[]> {
         if(!element) {
-            return Promise.resolve([this.root]);
+            return Promise.resolve(this.root.getChilds());
         }
 
         if(element.isFolderType()) {
