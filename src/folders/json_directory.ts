@@ -7,7 +7,7 @@ import { JsonShortcut } from '../shortcuts/json_shortcut';
 import { JsonDirectoryScehma, JsonFileSchema } from '../common/json_schema'
 
 export class JsonDirectory implements Shortcut {
-    public readonly collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+    public readonly collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
     public readonly label : string | undefined;
 
     private constructor(private readonly json : JsonDirectoryScehma, label? : string) {

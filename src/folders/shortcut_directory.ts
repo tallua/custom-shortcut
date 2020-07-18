@@ -7,7 +7,7 @@ import { ShortcutFactory } from '../shortcut_factory';
 
 export class ShortcutDirectory implements Shortcut {
 
-    public readonly collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+    public readonly collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
     public readonly label : string | undefined;
 
     constructor(public readonly fullpath : string) {
