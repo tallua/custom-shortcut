@@ -18,20 +18,22 @@
 	"main": "./out/extension.js",
 	"contributes": {
 		"configuration": {
-			"title":"Custom Shortcut",
+			"title": "Custom Shortcut",
 			"properties": {
-				"custom-shortcut.globalDirectories" : {
-					"type":"array",
+				"custom-shortcut.globalDirectories": {
+					"type": "array",
 					"items": {
-						"type":"string",
+						"type": "string",
 						"title": "path"
 					},
-					"default":["~/Favorites"],
+					"default": [
+						"~/Favorites"
+					],
 					"description": "absoulute pathes you want to track"
 				},
-				"custom-shortcut.localDirectories" : {
-					"type":"string",
-					"default":".vscode/shortcuts.json",
+				"custom-shortcut.localDirectories": {
+					"type": "string",
+					"default": ".vscode/shortcuts.json",
 					"description": "relative path from your workspace directory"
 				}
 			}
@@ -51,7 +53,7 @@
 				{
 					"id": "custom-shortcut",
 					"title": "Custom Shortcuts",
-					"icon":"./res/dummy.svg"
+					"icon": "./res/dummy.svg"
 				}
 			]
 		},
@@ -88,5 +90,9 @@
 		"mocha": "^7.1.2",
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.3.0"
+	},
+	"dependencies": {
+		"@types/sqlite3": "^3.1.6",
+		"sqlite3": "^5.0.0"
 	}
 }

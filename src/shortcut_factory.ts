@@ -5,6 +5,7 @@ import { URLShortcut } from './shortcuts/url_shortcut';
 import { LNKShortcut } from './shortcuts/lnk_shortcut';
 import { ShortcutDirectory } from './folders/shortcut_directory';
 import { JsonDirectory } from './folders/json_directory';
+import { SqlDirectory } from './folders/sqlite_directory';
 
 export class ShortcutFactory {
 
@@ -14,12 +15,14 @@ export class ShortcutFactory {
 
     static createShortcut(fullpath : string) : Shortcut | null {
         const lstat = fs.lstatSync(fullpath);
-        const label = fullpath.split('/').pop();
+        const filename = fullpath.split('/').pop();
         const ext = fullpath.split('.').pop()?.toLowerCase();
 
-        if(label === 'Bookmarks' || ext === 'json') {
-            return this.createJSonShortcut(fullpath);
-        } if(lstat.isDirectory()) {
+        if(filename === 'places.sqlite') {
+            return SqlDirectory.createSqlRootDirectory(fullpath);
+        } else if(filename === 'Bookmarks' || ext === 'json') {
+            return JsonDirectory.createJsonRootDirectory(fullpath);
+        } else if(lstat.isDirectory()) {
             return this.createDirectoryShortcut(fullpath);
         } else if(lstat.isFile()) {
             return this.createFileShortcut(fullpath);
@@ -33,11 +36,6 @@ export class ShortcutFactory {
             .map(path => this.createShortcut(path))
             .filter(this.nullfilter);
     }
-
-    private static createJSonShortcut(fullpath : string) : Shortcut | null {
-        return JsonDirectory.createJsonRootDirectory(fullpath);
-    }
-
     private static createFileShortcut(fullpath : string) : Shortcut | null {
         let ext = fullpath.split('.').pop();
         ext = ext?.toLowerCase();
