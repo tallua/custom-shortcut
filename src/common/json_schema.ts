@@ -9,8 +9,8 @@ export interface JsonDirectoryScehma {
 export interface JsonFileSchema {
     roots : {
         bookmark_bar : JsonDirectoryScehma;
-        others : object;
-        synced : object;
+        other : JsonDirectoryScehma;
+        synced : JsonDirectoryScehma;
     },
     sync_metadata : string
 };

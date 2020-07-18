@@ -6,41 +6,66 @@ import { Shortcut, ShortcutFolder } from '../shortcut_provider';
 import { JsonShortcut } from '../shortcuts/json_shortcut';
 import { JsonDirectoryScehma, JsonFileSchema } from '../common/json_schema'
 
-export class JsonDirectory extends ShortcutFolder {
-    public readonly collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+class JsonChildDirectory extends ShortcutFolder {
     public readonly label : string | undefined;
 
-    private constructor(provider : string, private readonly json : JsonDirectoryScehma, label? : string) {
+    constructor(provider : string, private readonly json : JsonDirectoryScehma) {
         super(provider);
-        console.debug('JsonDirectory : creating : ' + json.name);
-        if(label) {
-            this.label = label;
-        } else {
-            this.label = json.name;
-        }
-    }
 
-    isFolderType() : boolean {
-        return true
+        this.label = json.name;
+        console.debug('JsonChildDirectory : creating : ' + json.name);
     }
 
     getChilds() : Shortcut[] {
         const result = this.json.children
             .map(json => json.type === 'folder' ? 
-                new JsonDirectory(this.provider, json) : new JsonShortcut(this.provider, json));
+                new JsonChildDirectory(this.provider, json) : new JsonShortcut(this.provider, json));
 
         return result;
     }
+}
 
-    public static createJsonRootDirectory(provider : string, fullpath : string) : JsonDirectory | null {
+export class JsonRootDirectory extends ShortcutFolder {
+    private readonly jsonpath : string;
+    public readonly label : string;
+
+    private data : JsonFileSchema;
+    private childs : Shortcut[];
+
+    constructor(provider : string, jsonpath : string, json : JsonFileSchema) {
+        super(provider);
+        
+        const filename = jsonpath.split('/').pop();
+        this.label = filename? filename : jsonpath;
+        this.jsonpath = jsonpath;
+        this.data = json;
+        this.childs = [];
+
+        this.update();
+    }
+
+    
+    getChilds() : Shortcut[] {
+        this.update();
+        
+        return this.childs;
+    }
+
+    update() {
+        this.childs = [
+            new JsonChildDirectory(this.provider, this.data.roots.bookmark_bar),
+            new JsonChildDirectory(this.provider, this.data.roots.other),
+            new JsonChildDirectory(this.provider, this.data.roots.synced),
+        ]
+    }
+
+    public static create(provider : string, fullpath : string) : Shortcut | null {
         const json : JsonFileSchema = JSON.parse(fs.readFileSync(fullpath).toString());
-        const filename = fullpath.split('/').pop();
-        const label = filename? filename : fullpath;
-
+        
         try {
             if(json.hasOwnProperty('roots')) {
                 if(json.roots.hasOwnProperty('bookmark_bar')) {
-                        return this.createRoot(provider, json, label);
+                        return new JsonRootDirectory(provider, fullpath, json);
                 }
             }
             
@@ -49,9 +74,5 @@ export class JsonDirectory extends ShortcutFolder {
             console.error(e);
             return null;
         }
-    }
-
-    private static createRoot(provider: string, json : JsonFileSchema, label : string) : JsonDirectory {
-        return new JsonDirectory(provider, json.roots.bookmark_bar, label);
     }
 }

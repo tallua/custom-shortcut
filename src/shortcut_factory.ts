@@ -4,7 +4,7 @@ import { Shortcut } from './shortcut_provider';
 import { URLShortcut } from './shortcuts/url_shortcut';
 import { LNKShortcut } from './shortcuts/lnk_shortcut';
 import { ShortcutDirectory } from './folders/shortcut_directory';
-import { JsonDirectory } from './folders/json_directory';
+import { JsonRootDirectory } from './folders/json_directory';
 import { SqlRootDirectory } from './folders/sqlite_directory';
 
 export class ShortcutFactory {
@@ -42,7 +42,7 @@ export class ShortcutFactory {
     }
 
     private static createJsonShortcut(provider : string, fullpath : string) {
-        return JsonDirectory.createJsonRootDirectory(provider, fullpath);
+        return JsonRootDirectory.create(provider, fullpath);
     }
 
     private static createFileShortcut(provider : string, fullpath : string) : Shortcut | null {
