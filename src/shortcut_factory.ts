@@ -5,11 +5,11 @@ import { URLShortcut } from './shortcuts/url_shortcut';
 import { LNKShortcut } from './shortcuts/lnk_shortcut';
 import { ShortcutDirectory } from './folders/shortcut_directory';
 import { JsonDirectory } from './folders/json_directory';
-import { SqlDirectory } from './folders/sqlite_directory';
+import { SqlRootDirectory } from './folders/sqlite_directory';
 
 export class ShortcutFactory {
 
-    private static nullfilter<TValue>(value : TValue | null | undefined) : value is TValue {
+    public static nullfilter<TValue>(value : TValue | null | undefined) : value is TValue {
         return value !== null && value !== undefined;
     }
 
@@ -37,8 +37,8 @@ export class ShortcutFactory {
             .filter(this.nullfilter);
     }
     
-    private static createSqlShortcut(provider : string, fullpath : string) {
-        return SqlDirectory.createSqlRootDirectory(provider, fullpath);
+    private static createSqlShortcut(provider : string, fullpath : string) : Shortcut | null {
+        return new SqlRootDirectory(provider, fullpath);
     }
 
     private static createJsonShortcut(provider : string, fullpath : string) {
