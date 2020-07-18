@@ -1,11 +1,15 @@
 import * as vscode from 'vscode';
 
-import { ShortcutProvider } from './shortcut_provider';
+import { Shortcut, ShortcutProvider } from './shortcut_provider';
 import { RootDirectory } from './folders/root_directory';
 
+let providerList : ShortcutProvider[] = [];
+
 function registerCommands(context : vscode.ExtensionContext) {
-	let refreshCommand = vscode.commands.registerCommand('custom-shortcut.refresh', () => {
-		vscode.window.showInformationMessage('Custom Shortcut : Refresh');
+	let refreshCommand = vscode.commands.registerCommand('custom-shortcut.refresh-all', () => {
+		vscode.window.showInformationMessage('Custom Shortcut : Refresh All');
+
+		providerList.forEach(provider => provider.refresh(undefined));
 	});
 	context.subscriptions.push(refreshCommand);
 	
@@ -32,6 +36,15 @@ function registerCommands(context : vscode.ExtensionContext) {
 		}
 	});
 	context.subscriptions.push(openLinkCommand);
+
+	
+	let refreshNodeCommand = vscode.commands.registerCommand('custom-shortcut.refresh', 
+	(provider : ShortcutProvider, node : Shortcut) => {
+		vscode.window.showInformationMessage('Custom Shortcut : Refresh');
+
+		provider.refresh(node);
+	});
+	context.subscriptions.push(refreshNodeCommand);
 }
 
 function registerGlobalTreeview(config : vscode.WorkspaceConfiguration) {
@@ -48,25 +61,25 @@ function registerGlobalTreeview(config : vscode.WorkspaceConfiguration) {
 		});
 	}
 
-	vscode.window.registerTreeDataProvider(
-		'global-shortcuts',
-		new ShortcutProvider(new RootDirectory(refinedPath))
-	);
+	const globalProvider = new ShortcutProvider(new RootDirectory(refinedPath));
+	providerList.push(globalProvider);
+	let tmp = vscode.window.createTreeView('global-shortcuts', { treeDataProvider : globalProvider });
+	
 }
 
 function registerLocalTreeview(config : vscode.WorkspaceConfiguration) {
 
-	const path : string | undefined = config.get('globalDirectories');
+	const path : string | undefined = config.get('localDirectories');
 	let refinedPath : string[] = [];
 
 	if(path !== undefined) {
 		refinedPath = [path];
 	}
 
-	vscode.window.registerTreeDataProvider(
-		'local-shortcuts',
-		new ShortcutProvider(new RootDirectory(refinedPath))
-	);
+	
+	const localProvider = new ShortcutProvider(new RootDirectory(refinedPath));
+	providerList.push(localProvider);
+	vscode.window.createTreeView('local-shortcuts', { treeDataProvider : localProvider });
 }
 
 

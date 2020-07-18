@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:custom-shortcut.refresh",
+		"onCommand:custom-shortcut.refresh-all",
 		"onCommand:custom-shortcut.open-config",
 		"onView:global-shortcuts",
 		"onView:local-shortcuts"
@@ -40,8 +40,8 @@
 		},
 		"commands": [
 			{
-				"command": "custom-shortcut.refresh",
-				"title": "Custom Shortcut : Refresh"
+				"command": "custom-shortcut.refresh-all",
+				"title": "Custom Shortcut : Refresh All"
 			},
 			{
 				"command": "custom-shortcut.open-config",

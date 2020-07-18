@@ -13,6 +13,9 @@ export interface Shortcut extends vscode.TreeItem {
 export class ShortcutProvider implements vscode.TreeDataProvider<Shortcut> {
     constructor(private root : RootDirectory) { }
 
+    private _onDidChangeTreeData: vscode.EventEmitter<Shortcut | undefined> = new vscode.EventEmitter<Shortcut | undefined>();
+    readonly onDidChangeTreeData: vscode.Event<Shortcut | undefined> = this._onDidChangeTreeData.event;
+
     getTreeItem(element : Shortcut) : vscode.TreeItem {
         return element;
     }
@@ -27,6 +30,10 @@ export class ShortcutProvider implements vscode.TreeDataProvider<Shortcut> {
         }
 
         return Promise.resolve([]);
+    }
+
+    refresh(shortcut : Shortcut | undefined) : void {
+        this._onDidChangeTreeData.fire(shortcut);
     }
 }
 
