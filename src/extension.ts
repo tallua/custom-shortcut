@@ -3,13 +3,13 @@ import * as vscode from 'vscode';
 import { Shortcut, ShortcutProvider } from './shortcut_provider';
 import { RootDirectory } from './folders/root_directory';
 
-let providerList : ShortcutProvider[] = [];
+let providerMap : Map<string, ShortcutProvider> = new Map<string, ShortcutProvider>();
 
 function registerCommands(context : vscode.ExtensionContext) {
 	let refreshCommand = vscode.commands.registerCommand('custom-shortcut.refresh-all', () => {
 		vscode.window.showInformationMessage('Custom Shortcut : Refresh All');
 
-		providerList.forEach(provider => provider.refresh(undefined));
+		providerMap.forEach(provider => provider.refresh(undefined));
 	});
 	context.subscriptions.push(refreshCommand);
 	
@@ -36,13 +36,12 @@ function registerCommands(context : vscode.ExtensionContext) {
 		}
 	});
 	context.subscriptions.push(openLinkCommand);
-
 	
 	let refreshNodeCommand = vscode.commands.registerCommand('custom-shortcut.refresh', 
-	(provider : ShortcutProvider, node : Shortcut) => {
-		vscode.window.showInformationMessage('Custom Shortcut : Refresh');
-
-		provider.refresh(node);
+	(provider : string, node : Shortcut) => {
+		const providerObject = providerMap.get(provider);
+		if(providerObject)
+			providerObject.refresh(node);
 	});
 	context.subscriptions.push(refreshNodeCommand);
 }
@@ -61,9 +60,11 @@ function registerGlobalTreeview(config : vscode.WorkspaceConfiguration) {
 		});
 	}
 
-	const globalProvider = new ShortcutProvider(new RootDirectory(refinedPath));
-	providerList.push(globalProvider);
-	let tmp = vscode.window.createTreeView('global-shortcuts', { treeDataProvider : globalProvider });
+	const providerId = 'global';
+	const root = new RootDirectory(providerId, refinedPath)
+	const globalProvider = new ShortcutProvider(root, providerId);
+	providerMap.set(providerId, globalProvider);
+	vscode.window.createTreeView('global-shortcuts', { treeDataProvider : globalProvider });
 	
 }
 
@@ -77,8 +78,10 @@ function registerLocalTreeview(config : vscode.WorkspaceConfiguration) {
 	}
 
 	
-	const localProvider = new ShortcutProvider(new RootDirectory(refinedPath));
-	providerList.push(localProvider);
+	const providerId = 'local';
+	const root = new RootDirectory(providerId, refinedPath)
+	const localProvider = new ShortcutProvider(root, providerId);
+	providerMap.set(providerId, localProvider);
 	vscode.window.createTreeView('local-shortcuts', { treeDataProvider : localProvider });
 }
 

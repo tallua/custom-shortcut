@@ -2,16 +2,15 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import { Shortcut } from '../shortcut_provider';
+import { ShortcutItem } from '../shortcut_provider';
 
-export class URLShortcut implements Shortcut {
-
-    public readonly collapsibleState = vscode.TreeItemCollapsibleState.None;
+export class URLShortcut extends ShortcutItem {
     public readonly label : string | undefined;
     public readonly path : string;
     public readonly command : vscode.Command;
 
-    constructor(public readonly fullpath : string) {
+    constructor(provider : string, public readonly fullpath : string) {
+        super(provider);
         console.debug('URLShortcut : creating : ' + fullpath);
         this.label = fullpath.split('/').pop();
         this.path = fullpath;
@@ -22,14 +21,6 @@ export class URLShortcut implements Shortcut {
             title: '',
             arguments: [url]
         };
-    }
-
-    isFolderType() : boolean {
-        return false;
-    }
-
-    getChilds() : Shortcut[] {
-        return [];
     }
 
     getUrl() : string {

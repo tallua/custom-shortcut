@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import { Shortcut } from '../shortcut_provider';
+import { Shortcut, ShortcutItem } from '../shortcut_provider';
 
 enum LnkFlags {
     TARG = 0,
@@ -16,14 +16,14 @@ enum LnkFlags {
     FLAG_LENGTH
 }
 
-export class LNKShortcut implements Shortcut {
+export class LNKShortcut extends ShortcutItem {
     private readonly LNK_HEADER_LEN = 76;
-    public readonly collapsibleState = vscode.TreeItemCollapsibleState.None;
     public readonly label : string | undefined;
     public readonly path : string;
     public readonly command : vscode.Command;
 
-    constructor(public readonly fullpath : string) {
+    constructor(provider : string, public readonly fullpath : string) {
+        super(provider);
         console.debug('LNKShortcut : creating : ' + fullpath);
         this.label = fullpath.split('/').pop();
         this.path = fullpath;
@@ -34,14 +34,6 @@ export class LNKShortcut implements Shortcut {
             title: '',
             arguments: [url]
         };
-    }
-
-    isFolderType() : boolean {
-        return false;
-    }
-
-    getChilds() : Shortcut[] {
-        return [];
     }
 
 

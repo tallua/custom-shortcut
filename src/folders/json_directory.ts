@@ -2,15 +2,16 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import { Shortcut } from '../shortcut_provider';
+import { Shortcut, ShortcutFolder } from '../shortcut_provider';
 import { JsonShortcut } from '../shortcuts/json_shortcut';
 import { JsonDirectoryScehma, JsonFileSchema } from '../common/json_schema'
 
-export class JsonDirectory implements Shortcut {
+export class JsonDirectory extends ShortcutFolder {
     public readonly collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
     public readonly label : string | undefined;
 
-    private constructor(private readonly json : JsonDirectoryScehma, label? : string) {
+    private constructor(provider : string, private readonly json : JsonDirectoryScehma, label? : string) {
+        super(provider);
         console.debug('JsonDirectory : creating : ' + json.name);
         if(label) {
             this.label = label;
@@ -25,12 +26,13 @@ export class JsonDirectory implements Shortcut {
 
     getChilds() : Shortcut[] {
         const result = this.json.children
-            .map(json => json.type === 'folder' ? new JsonDirectory(json) : new JsonShortcut(json));
+            .map(json => json.type === 'folder' ? 
+                new JsonDirectory(this.provider, json) : new JsonShortcut(this.provider, json));
 
         return result;
     }
 
-    public static createJsonRootDirectory(fullpath : string) : JsonDirectory | null {
+    public static createJsonRootDirectory(provider : string, fullpath : string) : JsonDirectory | null {
         const json : JsonFileSchema = JSON.parse(fs.readFileSync(fullpath).toString());
         const filename = fullpath.split('/').pop();
         const label = filename? filename : fullpath;
@@ -38,7 +40,7 @@ export class JsonDirectory implements Shortcut {
         try {
             if(json.hasOwnProperty('roots')) {
                 if(json.roots.hasOwnProperty('bookmark_bar')) {
-                        return this.createRoot(json, label);
+                        return this.createRoot(provider, json, label);
                 }
             }
             
@@ -49,7 +51,7 @@ export class JsonDirectory implements Shortcut {
         }
     }
 
-    private static createRoot(json : JsonFileSchema, label : string) : JsonDirectory {
-        return new JsonDirectory(json.roots.bookmark_bar, label);
+    private static createRoot(provider: string, json : JsonFileSchema, label : string) : JsonDirectory {
+        return new JsonDirectory(provider, json.roots.bookmark_bar, label);
     }
 }

@@ -2,18 +2,18 @@
 import * as vscode from 'vscode';
 
 import { ShortcutItem } from '../shortcut_provider';
-import { JsonDirectoryScehma } from '../common/json_schema'
+import { SqliteSchema } from '../common/sqlite_schema'
 
-export class JsonShortcut extends ShortcutItem {
+export class SqliteShortcut extends ShortcutItem {
     public readonly label : string | undefined;
     public readonly command : vscode.Command;
 
-    constructor(provider : string, public readonly json : JsonDirectoryScehma) {
+    constructor(provider : string, public readonly sqlite : SqliteSchema) {
         super(provider);
-        console.debug('JsonShortcut : creating : ' + json.name);
-        this.label = json.name;
+        console.debug('SqliteShortcut : creating : ' + sqlite.title);
+        this.label = sqlite.title;
 
-        const url = json.url;
+        const url = sqlite.url;
         this.command = {
             command: 'custom-shortcut.open-link',
             title: '',

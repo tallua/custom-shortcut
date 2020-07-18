@@ -1,21 +1,15 @@
-
-import * as vscode from 'vscode';
-
-import { Shortcut } from '../shortcut_provider';
+import { Shortcut, ShortcutFolder } from '../shortcut_provider';
 import { ShortcutFactory } from '../shortcut_factory';
 
-export class RootDirectory implements Shortcut {
-    public readonly collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+export class RootDirectory extends ShortcutFolder {
+    public readonly label = '';
 
-    constructor(public readonly pathlist : string[]) {
+    constructor(provider : string, public readonly pathlist : string[]) {
+        super(provider);
         console.debug('RootDirectory : creating'); 
     }
 
-    isFolderType() : boolean {
-        return true;
-    }
-
     getChilds() : Shortcut[] {
-        return ShortcutFactory.createShortcuts(this.pathlist);
+        return ShortcutFactory.createShortcuts(this.provider, this.pathlist);
     }
 }
