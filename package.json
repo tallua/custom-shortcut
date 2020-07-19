@@ -2,7 +2,7 @@
 	"name": "custom-shortcut",
 	"displayName": "custom-shortcut",
 	"description": "create your custom shortcuts",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
